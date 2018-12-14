@@ -89,7 +89,7 @@ X_train, y_train = X_full[1919:], y_full[1919:]
 
 
 print('Constructing model...')
-model = vgg_model()
+model = cnn_model()
 
 print('Fitting model...')
 model.fit(X_train, y_train, batch_size=100, epochs=50, validation_split=.1, verbose=2)
