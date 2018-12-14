@@ -39,6 +39,9 @@ def build_training():
         rgb = cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
         
         rgbs.append(cv2.resize(rgb, (224,224), interpolation=cv2.INTER_AREA))
+        
+        if len(rgbs)%100==0:
+            print('{} frames done'.format(len(rgbs)))
     
     return np.array(rgbs), speeds.values[1:]
 
@@ -98,20 +101,25 @@ def vgg_model():
 
 # RUNNING ------------
 
+print('Building training set...')
 X_full, y_full = build_training()
 
+print('Splitting training set...')
 X_train, y_train = X_full[:1919], y_full[:1919]
 
 X_train, y_train = X_full[1919:], y_full[1919:]
 
 
+print('Constructing model...')
 model = vgg_model()
 
+print('Fitting model...')
 model.fit(X_train, y_train, batch_size=100, epochs=50, validation_split=.1, verbose=2)
 
+print('Evaluating model...')
 print(model.evaluate(X_test, y_test, batch_size=100, verbose=1))
 
-
+print('Saving model...')
 keras.models.save_model(model, 'model.m')
-
+print('Model saved.')
 
