@@ -109,11 +109,19 @@ X_test, y_test = X_full[1919:], y_full[1919:]
 print('Constructing model...')
 model = vgg_model()
 
+checkpoint_path = 'vgg_training/cp.ckpt'
+checkpoint_dir = os.path.dirname(checkpoint_path)
+
+# Create checkpoint callback
+cp_callback = tf.keras.callbacks.ModelCheckpoint(checkpoint_path,
+                                                save_weights_only=True,
+                                                verbose=1)
+
 print('Fitting model...')
-model.fit(X_train, y_train, batch_size=100, epochs=100, validation_split=.1, verbose=2)
+model.fit(X_train, y_train, batch_size=500, epochs=20, validation_split=.1, verbose=1, callbacks=[cp_callback])
 
 print('Evaluating model...')
-print(model.evaluate(X_test, y_test, batch_size=100, verbose=1))
+print(model.evaluate(X_test, y_test, batch_size=500, verbose=1))
 
 
 print('Saving model...')
