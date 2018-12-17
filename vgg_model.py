@@ -95,20 +95,28 @@ def vgg_model():
 
 # RUNNING ------------
 
-X_full, y_full = build_training()
+print('Building training set...')
+speeds = pd.read_csv('data/train.txt', names=['speed'])
 
+y_full = speeds['speed'].values[1:]
+X_full = np.load('processed_vid.npy')
+
+print('Splitting training set...')
 X_train, y_train = X_full[:1919], y_full[:1919]
 
-X_train, y_train = X_full[1919:], y_full[1919:]
+X_test, y_test = X_full[1919:], y_full[1919:]
 
-
+print('Constructing model...')
 model = vgg_model()
 
+print('Fitting model...')
 model.fit(X_train, y_train, batch_size=100, epochs=100, validation_split=.1, verbose=2)
 
+print('Evaluating model...')
 print(model.evaluate(X_test, y_test, batch_size=100, verbose=1))
 
 
+print('Saving model...')
 keras.models.save_model(model, 'model.m')
-
+print('Model saved.')
 
